@@ -1,30 +1,32 @@
-import express from 'express';
+import express, { Request, Response, Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { GitService } from '../services/gitService';
 import { AnalysisService } from '../services/analysisService';
 import { validateRepoUrl } from '../utils/validation';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Store analysis results in memory for MVP (use database in production)
 const analysisStore = new Map<string, any>();
 
 // POST /api/analyze - Submit repository for analysis
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response): Promise<void> => {
     try {
         const { repositoryUrl } = req.body;
 
         // Validate input
         if (!repositoryUrl) {
-            return res.status(400).json({
+            res.status(400).json({
                 error: 'Repository URL is required'
             });
+            return;
         }
 
         if (!validateRepoUrl(repositoryUrl)) {
-            return res.status(400).json({
+            res.status(400).json({
                 error: 'Invalid repository URL. Please provide a valid GitHub or GitLab URL.'
             });
+            return;
         }
 
         const analysisId = uuidv4();
@@ -58,15 +60,16 @@ router.post('/', async (req, res) => {
 });
 
 // GET /api/analyze/:id - Get analysis results
-router.get('/:id', (req, res) => {
+router.get('/:id', (req: Request, res: Response): void => {
     try {
         const { id } = req.params;
         const analysis = analysisStore.get(id);
 
         if (!analysis) {
-            return res.status(404).json({
+            res.status(404).json({
                 error: 'Analysis not found'
             });
+            return;
         }
 
         res.json(analysis);

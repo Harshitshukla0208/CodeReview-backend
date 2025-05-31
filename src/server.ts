@@ -1,10 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import path from 'path';
-import { analyzeRouter } from './routes/analyze';
-
 dotenv.config();
+import { analyzeRouter } from './routes/analyze';
 
 const app = express();
 const PORT = process.env.PORT;
