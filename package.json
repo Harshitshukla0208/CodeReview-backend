@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts",
-    "build": "tsc",
     "start": "node dist/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --config nodemon.json",
+    "dev:stable": "nodemon --watch src --ext ts,js --ignore temp --ignore node_modules --exec ts-node src/server.ts",
+    "build": "tsc",
+    "test": "jest",
+    "clean": "rimraf dist temp"
   },
   "author": "",
   "license": "ISC",
