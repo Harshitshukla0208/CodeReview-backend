@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { CodeFile } from './gitService';
+import { IssueAnalysis } from './issuesService';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -238,14 +239,12 @@ Be thorough but concise. Identify real issues, not minor style preferences.
     }
 
     async generateFinalReport(
-        fileAnalyses: FileAnalysis[],
-        metadata: {
-            repositoryUrl: string;
-            repositoryName: string;
-            totalFiles: number;
-            linesOfCode: number;
-        }
-    ): Promise<FinalReport> {
+fileAnalyses: FileAnalysis[], metadata: {
+    repositoryUrl: string;
+    repositoryName: string;
+    totalFiles: number;
+    linesOfCode: number;
+}, githubIssuesAnalysis: { totalIssues: number; openIssues: number; closedIssues: number; categorySummary: { bugs: number; features: number; enhancements: number; documentation: number; questions: number; other: number; }; prioritySummary: { critical: number; high: number; medium: number; low: number; }; effortSummary: { high: number; medium: number; low: number; }; analyses: IssueAnalysis[]; insights: string[]; error?: undefined; } | { error: any; totalIssues: number; analyses: never[]; openIssues?: undefined; closedIssues?: undefined; categorySummary?: undefined; prioritySummary?: undefined; effortSummary?: undefined; insights?: undefined; } | null    ): Promise<FinalReport> {
         console.log('📋 Generating final report...');
 
         // Calculate category scores
